@@ -8,13 +8,25 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 let portNumber = 7000;
 
-var config = require('./config.json');
+let configFile = './QBConfig.dev.json';
+console.log(process.env.NODE_ENV);
+
+switch(process.env.NODE_ENV){
+  case "alpha":
+    configFile = './QBConfig.alpha.json';
+  break;
+  case "prod":
+    configFile = './QBConfig.prod.json';
+  break;
+}
+
+var config = require(configFile);
 
 app.use(session({secret: 'secret', resave: 'false', saveUninitialized: 'false'}));
 
-
 // Database Initialization
-let db_host = 'mongodb://localhost:27017/quickbooks-online-dev'
+let db_host = 'mongodb://localhost:27017/QBO_DB';
+
 mongoose.Promise = global.Promise;
 mongoose.connect(db_host).then(() => {
   console.log('\x1b[32m%s\x1b[0m', 'Database Connection Established!');
@@ -217,7 +229,7 @@ app.get('/renew-token', async (req, res) => {
 });
 
 app.listen(portNumber, function () {
-  console.log('Example app listening on port 3000!')
+  console.log('Example app listening on port '+portNumber)
 });
 
 /*
