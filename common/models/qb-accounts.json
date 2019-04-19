@@ -17,6 +17,13 @@
     },
     "metaData": {
       "type": "object"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "createdAt": {
+      "type": "date"
     }
   },
   "validations": [],
