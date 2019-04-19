@@ -1,0 +1,26 @@
+{
+  "name": "QBConsumers",
+  "plural": "QBConsumers",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "moduleConsumerId": {
+      "type": "string",
+      "id": true,
+      "defaultFn": "uuidv4"
+    },
+    "clientId": {
+      "type": "string"
+    },
+    "metaData": {
+      "type": "object"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

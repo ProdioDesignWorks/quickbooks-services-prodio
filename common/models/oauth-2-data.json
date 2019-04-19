@@ -1,0 +1,38 @@
+{
+  "name": "Oauth2Data",
+  "plural": "Oauth2Data",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "moduleOauthId": {
+      "type": "string",
+      "id": true,
+      "defaultFn": "uuidv4"
+    },
+    "accessToken": {
+      "type": "string"
+    },
+    "refreshToken": {
+      "type": "string"
+    },
+    "tokenType": {
+      "type": "string"
+    },
+    "realmId": {
+      "type": "string"
+    },
+    "expires": {
+      "type": "date"
+    },
+    "refreshTokenExpires": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

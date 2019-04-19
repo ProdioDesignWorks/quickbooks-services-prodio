@@ -1,0 +1,26 @@
+{
+  "name": "QBEmployees",
+  "plural": "QBEmployees",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "moduleEmployeeId": {
+      "type": "string",
+      "id": true,
+      "defaultFn": "uuidv4"
+    },
+    "employeeId": {
+      "type": "string"
+    },
+    "metaData": {
+      "type": "object"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

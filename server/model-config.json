@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "ACL": {
+    "dataSource": "db",
+    "public": false
+  },
+  "Oauth2Data": {
+    "dataSource": "db",
+    "public": true
+  },
+  "QBConsumers": {
+    "dataSource": "db",
+    "public": true
+  },
+  "QBEmployees": {
+    "dataSource": "db",
+    "public": true
+  },
+  "QBAccounts": {
+    "dataSource": "db",
+    "public": true
+  }
+}
