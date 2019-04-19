@@ -16,7 +16,7 @@
       "type": "string"
     },
     "metaData": {
-      "type": "string"
+      "type": "object"
     }
   },
   "validations": [],

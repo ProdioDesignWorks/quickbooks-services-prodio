@@ -19,22 +19,8 @@ const {
     isNull
 } = require('../../utility/helper');
 
-let configFile = '../../config/QBConfig.dev.json';
-console.log(process.env.NODE_ENV);
-
-switch(process.env.NODE_ENV){
-  case "alpha":
-    configFile = '../../config/QBConfig.alpha.json';
-  break;
-  case "prod":
-    configFile = '../../config/QBConfig.prod.json';
-  break;
-}
-
-var config = require(configFile);
-
 const {
-    QB_URLS,QB_TERMS
+    QB_URLS,QB_TERMS,config
 } = require('../../config/constants');
 
 
@@ -222,13 +208,16 @@ module.exports = function(Oauth2data) {
         Oauth2data.findOne({"where":{}}).then(oauthData=>{
             if(isValidObject(oauthData)){
                 //renewToken(oauth2data,cb);
+                console.log("12331")
 
                 if ((oauthData.expires.getTime() - (new Date())) < 3000) {
+                    console.log("3323431")
                     //renew token
                     let token = intuitAuth.createToken(
                         oauthData.accessToken, oauthData.refreshToken,
                         oauthData.tokenType
                       );
+                    console.log("2vddf")
                     token.refresh().then( (newToken) => {
                         console.log('New token: ', newToken);
                         let tokenInfo = {
