@@ -1,0 +1,28 @@
+{
+  "name": "QBInvoices",
+  "plural": "QBInvoices",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "paymentInvoiceId": {
+      "type": "string"
+    },
+    "metaData": {
+      "type": "object"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "createdAt": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

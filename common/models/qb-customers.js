@@ -116,7 +116,7 @@ module.exports = function(Qbcustomers) {
         		customerData["Id"] = customerInfo["metaData"]["Customer"]["Id"];
         		customerData["SyncToken"] = parseInt(customerInfo["metaData"]["Customer"]["SyncToken"]);
 
-        		QBAPIHandler.funCallApi(QB_URLS["EDIT_CUSTOMER"], accountData, "POST",lbModels).then(responseData => {
+        		QBAPIHandler.funCallApi(QB_URLS["EDIT_CUSTOMER"], customerData, "POST",lbModels).then(responseData => {
 		            if (responseData["success"]) {
 		            	customerInfo.updateAttributes({"metaData":responseData["body"]}).then(success=>{
 		    				cb(null, responseData);
@@ -303,9 +303,6 @@ module.exports = function(Qbcustomers) {
             }
         }
     );
-    // 34.218.124.63
-
-    // 172.31.27.48
 
     Qbcustomers.getAllCustomers = function(pageNo, cb) {
     	let lbModels = Qbcustomers.app.models;
@@ -317,7 +314,7 @@ module.exports = function(Qbcustomers) {
 
 		QBAPIHandler.funCallApi(_url, {}, "GET",lbModels).then(responseData => {
             if (responseData["success"]) {
-            	cb(null, {"success":true,"body": responseData["body"]["QueryResponse"] });
+            	cb(null, {"success":true,"body": responseData["body"]["QueryResponse"]["Customer"] });
             } else {
                 cb(new HttpErrors.InternalServerError(responseData["errorMessage"], {
                     expose: false

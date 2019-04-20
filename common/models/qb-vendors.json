@@ -1,0 +1,28 @@
+{
+  "name": "QBVendors",
+  "plural": "QBVendors",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "vendorId": {
+      "type": "string"
+    },
+    "metaData": {
+      "type": "object"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "createdAt": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

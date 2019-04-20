@@ -21,7 +21,12 @@ exports.QB_URLS = {
     "EDIT_CUSTOMER": '/customer?operation=update&minorversion=4',
     "GET_CUSTOMER": '/customer/[CUSTOMERID]?minorversion=4',
     "DELETE_CUSTOMER": "/customer?minorversion=4",
-    "GETALL_CUSTOMERS": "/query?query=[QUERY]"
+    "GETALL_CUSTOMERS": "/query?query=[QUERY]",
+    "CREATE_EMPLOYEE":"/employee?minorversion=4",
+    "EDIT_EMPLOYEE": '/employee?operation=update&minorversion=4',
+    "GET_EMPLOYEE": '/employee/[EMPLOYEEID]?minorversion=4',
+    "DELETE_EMPLOYEE": "/employee?minorversion=4",
+    "GETALL_EMPLOYEES": "/query?query=[QUERY]",
 }
 
 exports.QB_TERMS = {
@@ -33,6 +38,11 @@ exports.QB_TERMS = {
     "GET_CUSTOMER": "GET_CUSTOMER",
     "DELETE_CUSTOMER": "DELETE_CUSTOMER",
     "GETALL_CUSTOMERS": "GETALL_CUSTOMERS",
+    "CREATE_EMPLOYEE":"CREATE_EMPLOYEE",
+    "EDIT_EMPLOYEE": "EDIT_EMPLOYEE",
+    "GET_EMPLOYEE": "GET_EMPLOYEE",
+    "DELETE_EMPLOYEE": "DELETE_EMPLOYEE",
+    "GETALL_EMPLOYEES": "GETALL_EMPLOYEES",
 }
 
 exports.config = config;

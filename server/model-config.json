@@ -32,5 +32,17 @@
   "QBCustomers": {
     "dataSource": "db",
     "public": true
+  },
+  "QBPayments": {
+    "dataSource": "db",
+    "public": true
+  },
+  "QBInvoices": {
+    "dataSource": "db",
+    "public": true
+  },
+  "QBVendors": {
+    "dataSource": "db",
+    "public": true
   }
 }
