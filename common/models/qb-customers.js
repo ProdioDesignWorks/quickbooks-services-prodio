@@ -21,17 +21,17 @@ const {
 
 const QBAPIHandler = require('../../utility/apis_handler');
 
-module.exports = function(Qbemployees) {
+module.exports = function(Qbcustomers) {
 
-	Qbemployees.remoteMethod(
-        'createEmployee', {
+	Qbcustomers.remoteMethod(
+        'createCustomer', {
             http: {
                 verb: 'post'
             },
             description: ["This request will provide transaction details"],
             accepts: [
-            	{ arg: 'employeeId', type: 'string', required: false, http: { source: 'query' }},
-            	{ arg: 'employeeData', type: 'object', required: true, http: { source: 'body' }}
+            	{ arg: 'customerId', type: 'string', required: false, http: { source: 'query' }},
+            	{ arg: 'customerData', type: 'object', required: true, http: { source: 'body' }}
             ],
             returns: {
                 type: 'object',
@@ -40,24 +40,24 @@ module.exports = function(Qbemployees) {
         }
     );
 
-    Qbemployees.createEmployee = function(employeeId,employeeData, cb) {
-    	if (!isNull(employeeData["meta"])) {
-            employeeData = employeeData["meta"];
+    Qbcustomers.createCustomer = function(customerId,customerData, cb) {
+    	if (!isNull(customerData["meta"])) {
+            customerData = customerData["meta"];
         }
-        let lbModels = Qbemployees.app.models;
+        let lbModels = Qbcustomers.app.models;
 
-        Qbemployees.findOne({"where":{"employeeId":employeeId}}).then(employeeInfo=>{
-        	if(isValidObject(employeeInfo)){
+        Qbcustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        	if(isValidObject(customerInfo)){
         		cb(new HttpErrors.InternalServerError('The customer Id already exists.', {
 		           expose: false
 		    	}));
         	}else{
-        		QBAPIHandler.funCallApi(QB_URLS["CREATE_EMPLOYEE"], employeeData,"POST", lbModels).then(responseData => {
+        		QBAPIHandler.funCallApi(QB_URLS["CREATE_CUSTOMER"], customerData,"POST", lbModels).then(responseData => {
 		            if (responseData["success"]) {
-		            	Qbemployees.create({"employeeId":employeeId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
+		            	Qbcustomers.create({"customerId":customerId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 		    				cb(null, responseData);
 		    			}).catch(err=>{
-		    				cb(new HttpErrors.InternalServerError('Error While Saving QBEmployee Info.', {
+		    				cb(new HttpErrors.InternalServerError('Error While Saving QBAccount Info.', {
 			                    expose: false
 			                }));
 		    			})
@@ -69,7 +69,6 @@ module.exports = function(Qbemployees) {
 		            }
 
 		        }).catch(err => {
-                    console.log(err);
 		            let returnMsg = err;
 		            if (!isNull(err["body"]["Fault"])) {
 		                returnMsg = err["body"]["Fault"]["Error"][0]["Detail"];
@@ -81,22 +80,22 @@ module.exports = function(Qbemployees) {
         	}
 
         }).catch(err=>{
-        	cb(new HttpErrors.InternalServerError('Error while searching employee info '+JSON.stringify(err), {
+        	cb(new HttpErrors.InternalServerError('Error while searching customer info '+JSON.stringify(err), {
 		                expose: false
 		    }));
         })
     }
 
 
-    Qbemployees.remoteMethod(
-        'editEmployee', {
+    Qbcustomers.remoteMethod(
+        'editCustomer', {
             http: {
                 verb: 'post'
             },
             description: ["This request will provide transaction details"],
             accepts: [
-            	{ arg: 'employeeId', type: 'string', required: true, http: { source: 'query' }},
-            	{ arg: 'employeeData', type: 'object', required: true, http: { source: 'body' }}
+            	{ arg: 'customerId', type: 'string', required: true, http: { source: 'query' }},
+            	{ arg: 'customerData', type: 'object', required: true, http: { source: 'body' }}
             ],
             returns: {
                 type: 'object',
@@ -105,21 +104,21 @@ module.exports = function(Qbemployees) {
         }
     );
 
-    Qbemployees.editEmployee = function(employeeId,employeeData, cb) {
-    	if (!isNull(employeeData["meta"])) {
-            employeeData = employeeData["meta"];
+    Qbcustomers.editCustomer = function(customerId,customerData, cb) {
+    	if (!isNull(customerData["meta"])) {
+            customerData = customerData["meta"];
         }
 
-        let lbModels = Qbemployees.app.models;
+        let lbModels = Qbcustomers.app.models;
 
-        Qbemployees.findOne({"where":{"employeeId":employeeId}}).then(employeeInfo=>{
-        	if(isValidObject(employeeInfo)){
-        		employeeData["Id"] = employeeInfo["metaData"]["Employee"]["Id"];
-        		employeeData["SyncToken"] = parseInt(employeeInfo["metaData"]["Employee"]["SyncToken"]);
+        Qbcustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        	if(isValidObject(customerInfo)){
+        		customerData["Id"] = customerInfo["metaData"]["Customer"]["Id"];
+        		customerData["SyncToken"] = parseInt(customerInfo["metaData"]["Customer"]["SyncToken"]);
 
-        		QBAPIHandler.funCallApi(QB_URLS["EDIT_EMPLOYEE"], employeeData, "POST",lbModels).then(responseData => {
+        		QBAPIHandler.funCallApi(QB_URLS["EDIT_CUSTOMER"], customerData, "POST",lbModels).then(responseData => {
 		            if (responseData["success"]) {
-		            	employeeInfo.updateAttributes({"metaData":responseData["body"]}).then(success=>{
+		            	customerInfo.updateAttributes({"metaData":responseData["body"]}).then(success=>{
 		    				cb(null, responseData);
 		    			}).catch(err=>{
 		    				cb(new HttpErrors.InternalServerError('Error While Saving QBCustomer Info.', {
@@ -143,27 +142,27 @@ module.exports = function(Qbemployees) {
 		            }));
 		        });
         	}else{
-        		cb(new HttpErrors.InternalServerError('The employee Id does not exists.', {
+        		cb(new HttpErrors.InternalServerError('The customer Id does not exists.', {
 		           expose: false
 		    	}));
         		
         	}
         }).catch(err=>{
-        	cb(new HttpErrors.InternalServerError('Error while searching employee info '+JSON.stringify(err), {
+        	cb(new HttpErrors.InternalServerError('Error while searching customer info '+JSON.stringify(err), {
 		                expose: false
 		    }));
         })
     }
 
 
-    Qbemployees.remoteMethod(
-        'getEmployee', {
+    Qbcustomers.remoteMethod(
+        'getCustomer', {
             http: {
                 verb: 'post'
             },
             description: ["This request will provide customer details"],
             accepts: [
-            	{ arg: 'employeeId', type: 'string', required: true, http: { source: 'query' }},
+            	{ arg: 'customerId', type: 'string', required: true, http: { source: 'query' }},
             ],
             returns: {
                 type: 'object',
@@ -172,21 +171,21 @@ module.exports = function(Qbemployees) {
         }
     );
 
-    Qbemployees.getEmployee = function(employeeId, cb) {
+    Qbcustomers.getCustomer = function(customerId, cb) {
 
-    	let lbModels = Qbemployees.app.models;
+    	let lbModels = Qbcustomers.app.models;
 
-        Qbemployees.findOne({"where":{"employeeId":employeeId}}).then(employeeInfo=>{
-        	if(isValidObject(employeeInfo)){
-        		let qbCustId = employeeInfo["metaData"]["Employee"]["Id"];
-        		let _url = QB_URLS["GET_EMPLOYEE"].replace("[EMPLOYEEID]",qbCustId);
+        Qbcustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        	if(isValidObject(customerInfo)){
+        		let qbCustId = customerInfo["metaData"]["Customer"]["Id"];
+        		let _url = QB_URLS["GET_CUSTOMER"].replace("[CUSTOMERID]",qbCustId);
 
         		QBAPIHandler.funCallApi(_url, {}, "GET",lbModels).then(responseData => {
 		            if (responseData["success"]) {
-		            	employeeInfo.updateAttributes({"metaData":responseData["body"]}).then(success=>{
+		            	customerInfo.updateAttributes({"metaData":responseData["body"]}).then(success=>{
 		    				cb(null, responseData);
 		    			}).catch(err=>{
-		    				cb(new HttpErrors.InternalServerError('Error While Saving QBEmployee Info.', {
+		    				cb(new HttpErrors.InternalServerError('Error While Saving QBCustomer Info.', {
 			                    expose: false
 			                }));
 		    			})
@@ -207,27 +206,27 @@ module.exports = function(Qbemployees) {
 		            }));
 		        });
         	}else{
-        		cb(new HttpErrors.InternalServerError('The employee Id does not exists.', {
+        		cb(new HttpErrors.InternalServerError('The customer Id does not exists.', {
 		           expose: false
 		    	}));
         		
         	}
         }).catch(err=>{
-        	cb(new HttpErrors.InternalServerError('Error while searching Employee info '+JSON.stringify(err), {
+        	cb(new HttpErrors.InternalServerError('Error while searching customer info '+JSON.stringify(err), {
 		                expose: false
 		    }));
         })
     }
 
 
-    Qbemployees.remoteMethod(
-        'deleteEmployee', {
+    Qbcustomers.remoteMethod(
+        'deleteCustomer', {
             http: {
                 verb: 'post'
             },
             description: ["This request will provide customer details"],
             accepts: [
-            	{ arg: 'employeeId', type: 'string', required: true, http: { source: 'query' }},
+            	{ arg: 'customerId', type: 'string', required: true, http: { source: 'query' }},
             ],
             returns: {
                 type: 'object',
@@ -236,24 +235,24 @@ module.exports = function(Qbemployees) {
         }
     );
 
-    Qbemployees.deleteEmployee = function(employeeId, cb) {
-    	let lbModels = Qbemployees.app.models;
+    Qbcustomers.deleteCustomer = function(customerId, cb) {
+    	let lbModels = Qbcustomers.app.models;
 
-        Qbemployees.findOne({"where":{"employeeId":employeeId}}).then(employeeInfo=>{
-        	if(isValidObject(employeeInfo)){
-        		let qbCustId = employeeInfo["metaData"]["Employee"]["Id"];
-        		let _url = QB_URLS["DELETE_EMPLOYEE"].replace("[EMPLOYEEID]",qbCustId);
+        Qbcustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        	if(isValidObject(customerInfo)){
+        		let qbCustId = customerInfo["metaData"]["Customer"]["Id"];
+        		let _url = QB_URLS["DELETE_CUSTOMER"].replace("[CUSTOMERID]",qbCustId);
         		let deleteJson = {
-						    "domain": employeeInfo["metaData"]["Employee"]["domain"],
+						    "domain": customerInfo["metaData"]["Customer"]["domain"],
 						    "sparse": true,
 						    "Id": qbCustId,
-						    "SyncToken": employeeInfo["metaData"]["Employee"]["SyncToken"],
+						    "SyncToken": customerInfo["metaData"]["Customer"]["SyncToken"],
 						    "Active": false
 						};
 
         		QBAPIHandler.funCallApi(_url, deleteJson, "POST",lbModels).then(responseData => {
 		            if (responseData["success"]) {
-		            	employeeInfo.updateAttributes({"isActive": false}).then(success=>{
+		            	customerInfo.updateAttributes({"isActive": false}).then(success=>{
 		    				cb(null, responseData);
 		    			}).catch(err=>{
 		    				cb(new HttpErrors.InternalServerError('Error While Saving QBCustomer Info.', {
@@ -289,8 +288,8 @@ module.exports = function(Qbemployees) {
     }
 
 
-    Qbemployees.remoteMethod(
-        'getAllEmployees', {
+    Qbcustomers.remoteMethod(
+        'getAllCustomers', {
             http: {
                 verb: 'post'
             },
@@ -305,17 +304,17 @@ module.exports = function(Qbemployees) {
         }
     );
 
-    Qbemployees.getAllEmployees = function(pageNo, cb) {
-    	let lbModels = Qbemployees.app.models;
+    Qbcustomers.getAllCustomers = function(pageNo, cb) {
+    	let lbModels = Qbcustomers.app.models;
     	let limit = 10; let startPos = parseInt(pageNo) * parseInt(limit);
 
-    	let _query = "Select * from Employee startposition "+startPos+" maxresults "+limit;
+    	let _query = "Select * from Customer startposition "+startPos+" maxresults "+limit;
 
-        let _url = QB_URLS["GETALL_EMPLOYEES"].replace("[QUERY]",_query);
+        let _url = QB_URLS["GETALL_CUSTOMERS"].replace("[QUERY]",_query);
 
 		QBAPIHandler.funCallApi(_url, {}, "GET",lbModels).then(responseData => {
             if (responseData["success"]) {
-            	cb(null, {"success":true,"body": responseData["body"]["QueryResponse"]["Employee"] });
+            	cb(null, {"success":true,"body": responseData["body"]["QueryResponse"]["Customer"] });
             } else {
                 cb(new HttpErrors.InternalServerError(responseData["errorMessage"], {
                     expose: false

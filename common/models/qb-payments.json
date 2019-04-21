@@ -1,18 +1,18 @@
 {
-  "name": "QBAccounts",
-  "plural": "QBAccounts",
+  "name": "QBPayments",
+  "plural": "QBPayments",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "moduleAccountId": {
+    "modulePaymentId": {
       "type": "string",
       "id": true,
       "defaultFn": "uuidv4"
     },
-    "accountId": {
+    "paymentId": {
       "type": "string"
     },
     "metaData": {

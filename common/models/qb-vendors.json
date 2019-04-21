@@ -1,22 +1,29 @@
 {
-  "name": "QBConsumers",
-  "plural": "QBConsumers",
+  "name": "QBVendors",
+  "plural": "QBVendors",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "moduleConsumerId": {
+    "moduleVendorId": {
       "type": "string",
       "id": true,
       "defaultFn": "uuidv4"
     },
-    "clientId": {
+    "vendorId": {
       "type": "string"
     },
     "metaData": {
       "type": "object"
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "createdAt": {
+      "type": "date"
     }
   },
   "validations": [],

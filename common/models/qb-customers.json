@@ -1,18 +1,13 @@
 {
-  "name": "QBAccounts",
-  "plural": "QBAccounts",
+  "name": "QBCustomers",
+  "plural": "QBCustomers",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "moduleAccountId": {
-      "type": "string",
-      "id": true,
-      "defaultFn": "uuidv4"
-    },
-    "accountId": {
+    "customerId": {
       "type": "string"
     },
     "metaData": {

@@ -19,6 +19,7 @@ const {
     config
 } = require('../../config/constants');
 
+const QBAPIHandler = require('../../utility/apis_handler');
 
 module.exports = function(Qbaccounts) {
 
@@ -44,15 +45,17 @@ module.exports = function(Qbaccounts) {
             accountData = accountData["meta"];
         }
 
-        Qbaccounts.findOne({"accountId":accountId}).then(accountInfo=>{
+        let lbModels = Qbaccounts.app.models;
+
+        Qbaccounts.findOne({"where":{"accountId":accountId}}).then(accountInfo=>{
         	if(isValidObject(accountInfo)){
         		cb(new HttpErrors.InternalServerError('The account Id already exists.', {
 		           expose: false
 		    	}));
         	}else{
-        		funCallApi(QB_URLS["CREATE_ACCOUNT"], accountData,"POST").then(responseData => {
+        		QBAPIHandler.funCallApi(QB_URLS["CREATE_ACCOUNT"], accountData,"POST", lbModels).then(responseData => {
 		            if (responseData["success"]) {
-		            	Qbaccounts.create({"accountId":accountId,"metaData":responseData["body"]}).then(success=>{
+		            	Qbaccounts.create({"accountId":accountId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 		    				cb(null, responseData);
 		    			}).catch(err=>{
 		    				cb(new HttpErrors.InternalServerError('Error While Saving QBAccount Info.', {
@@ -85,84 +88,6 @@ module.exports = function(Qbaccounts) {
 
     }
 
-    async function funCallApi(actionName, requestData, apiMethod) {
-        return await funQBAPICall(actionName, requestData,apiMethod);
-    }
-
-    function funQBAPICall(actionName, requestData, apiMethod) {
-        return new Promise((resolve, reject) => {
-            Qbaccounts.app.models.Oauth2Data.renewToken(function(err, res) {
-            	console.log(" \n \n");
-            	console.log(res);
-                var url = config.api_uri + res.oauth_info.realmId + actionName;
-                console.log('Making API call to: ' + url)
-                var requestObj = {
-                    url: url,
-                    headers: {
-                        'Authorization': 'Bearer ' + res.oauth_info.accessToken,
-                        'Accept': 'application/json',
-                        'content-type': 'application/json',
-                    },
-                    json: true,
-                    method:apiMethod
-                };
-
-                if(apiMethod=="POST"){
-                	requestObj["body"] = requestData;
-                }
-
-                request(requestObj, function(err, response) {
-
-                    if (err) {
-                        reject({
-                            "success": false,
-                            "errorMessage": 'Error while requesting data ' + JSON.stringify(err)
-                        });
-                    }
-
-                    if (response.statusCode == 401 && trycount < 1) {
-                        console.log('401 response obtained, Renewing token');
-                        // let token = await renewToken(oauth2data); 
-                        Oauth2data.renewToken().then(tokenInfo => {
-                            if (tokenInfo) {
-                                funQBAPICall(actionName, oauthData, requestData);
-                            } else {
-                                reject({
-                                    "success": false,
-                                    "errorMessage": "Invalid Token Info",
-                                    "body": null
-                                });
-                            }
-                        }).catch(err => {
-                            reject({
-                                "success": false,
-                                "errorMessage": JSON.stringify(err),
-                                "body": null
-                            });
-                        });
-                    } else {
-                        console.log('Response body: ', response.body);
-                        console.log('Response header: ', response.headers);
-                        //res.send(response.body);
-
-                        if (!isNull(response.body["Fault"])) {
-                            reject({
-                                "success": false,
-                                "errorMessage": "Invalid Payload Request",
-                                "body": response.body
-                            });
-                        } else {
-                            resolve({
-                                "success": true,
-                                'body': response.body
-                            });
-                        }
-                    }
-                });
-            });
-        });
-    }
-
     Qbaccounts.remoteMethod(
         'editAccount', {
             http: {
@@ -185,10 +110,14 @@ module.exports = function(Qbaccounts) {
             accountData = accountData["meta"];
         }
 
-        Qbaccounts.findOne({"accountId":accountId}).then(accountInfo=>{
+        let lbModels = Qbaccounts.app.models;
+
+        Qbaccounts.findOne({"where":{"accountId":accountId}}).then(accountInfo=>{
         	if(isValidObject(accountInfo)){
         		accountData["Id"] = accountInfo["metaData"]["Account"]["Id"];
-        		funCallApi(QB_URLS["EDIT_ACCOUNT"], accountData, "POST").then(responseData => {
+        		accountData["SyncToken"] = parseInt(accountInfo["metaData"]["Account"]["SyncToken"]);
+
+        		QBAPIHandler.funCallApi(QB_URLS["EDIT_ACCOUNT"], accountData, "POST",lbModels).then(responseData => {
 		            if (responseData["success"]) {
 		            	accountInfo.updateAttributes({"metaData":responseData["body"]}).then(success=>{
 		    				cb(null, responseData);
@@ -246,12 +175,14 @@ module.exports = function(Qbaccounts) {
 
     Qbaccounts.getAccount = function(accountId, cb) {
 
-        Qbaccounts.findOne({"accountId":accountId}).then(accountInfo=>{
+    	let lbModels = Qbaccounts.app.models;
+
+        Qbaccounts.findOne({"where":{"accountId":accountId}}).then(accountInfo=>{
         	if(isValidObject(accountInfo)){
         		let qbAccId = accountInfo["metaData"]["Account"]["Id"];
         		let _url = QB_URLS["GET_ACCOUNT"].replace("[ACCOUNTID]",qbAccId);
 
-        		funCallApi(_url, {}, "GET").then(responseData => {
+        		QBAPIHandler.funCallApi(_url, {}, "GET",lbModels).then(responseData => {
 		            if (responseData["success"]) {
 		            	accountInfo.updateAttributes({"metaData":responseData["body"]}).then(success=>{
 		    				cb(null, responseData);
@@ -289,7 +220,6 @@ module.exports = function(Qbaccounts) {
 		    }));
         })
     }
-
 
 
 };

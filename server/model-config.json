@@ -21,15 +21,27 @@
     "dataSource": "db",
     "public": true
   },
-  "QBConsumers": {
-    "dataSource": "db",
-    "public": true
-  },
   "QBEmployees": {
     "dataSource": "db",
     "public": true
   },
   "QBAccounts": {
+    "dataSource": "db",
+    "public": true
+  },
+  "QBCustomers": {
+    "dataSource": "db",
+    "public": true
+  },
+  "QBPayments": {
+    "dataSource": "db",
+    "public": true
+  },
+  "QBInvoices": {
+    "dataSource": "db",
+    "public": true
+  },
+  "QBVendors": {
     "dataSource": "db",
     "public": true
   }
