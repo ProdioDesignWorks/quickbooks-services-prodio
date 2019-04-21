@@ -7,6 +7,11 @@
     "validateUpsert": true
   },
   "properties": {
+    "moduleInvoiceId": {
+      "type": "string",
+      "id": true,
+      "defaultFn": "uuidv4"
+    },
     "paymentInvoiceId": {
       "type": "string"
     },

@@ -7,7 +7,12 @@
     "validateUpsert": true
   },
   "properties": {
-    "paymentTransactionId": {
+    "modulePaymentId": {
+      "type": "string",
+      "id": true,
+      "defaultFn": "uuidv4"
+    },
+    "paymentId": {
       "type": "string"
     },
     "metaData": {

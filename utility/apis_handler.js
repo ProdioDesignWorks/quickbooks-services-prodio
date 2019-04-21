@@ -17,13 +17,26 @@ function funQBAPICall(actionName, requestData, apiMethod, lbModels) {
             console.log(" \n \n");
             console.log(res);
             var url = config.api_uri + res.oauth_info.realmId + actionName;
-            console.log('Making API call to: ' + url)
+            console.log('Making API call to: ' + url);
+            let contentType = 'application/json';
+
+            if(!isNull(requestData["action"])){
+                if(requestData["action"]=="EMAIL_INVOICE"){
+                    contentType = 'application/octet-stream';
+                    requestData = {};
+                }
+                if(requestData["action"]=="GET_INVOICE_PDF"){
+                    contentType = 'application/pdf';
+                    requestData = {};
+                }
+
+            }
             var requestObj = {
                 url: url,
                 headers: {
                     'Authorization': 'Bearer ' + res.oauth_info.accessToken,
                     'Accept': 'application/json',
-                    'content-type': 'application/json',
+                    'content-type': contentType,
                 },
                 json: true,
                 method:apiMethod
@@ -41,44 +54,49 @@ function funQBAPICall(actionName, requestData, apiMethod, lbModels) {
                         "errorMessage": 'Error while requesting data ' + JSON.stringify(err)
                     });
                 }
+                if(!isNull(response)){
 
-                if (response.statusCode == 401 && trycount < 1) {
-                    console.log('401 response obtained, Renewing token');
-                    // let token = await renewToken(oauth2data); 
-                    lbModels.Oauth2Data.renewToken().then(tokenInfo => {
-                        if (tokenInfo) {
-                            funQBAPICall(actionName, oauthData, requestData);
-                        } else {
+                    if (response.statusCode == 401 && trycount < 1) {
+                        console.log('401 response obtained, Renewing token');
+                        // let token = await renewToken(oauth2data); 
+                        lbModels.Oauth2Data.renewToken().then(tokenInfo => {
+                            if (tokenInfo) {
+                                funQBAPICall(actionName, oauthData, requestData);
+                            } else {
+                                reject({
+                                    "success": false,
+                                    "errorMessage": "Invalid Token Info",
+                                    "body": null
+                                });
+                            }
+                        }).catch(err => {
                             reject({
                                 "success": false,
-                                "errorMessage": "Invalid Token Info",
+                                "errorMessage": JSON.stringify(err),
                                 "body": null
                             });
-                        }
-                    }).catch(err => {
-                        reject({
-                            "success": false,
-                            "errorMessage": JSON.stringify(err),
-                            "body": null
-                        });
-                    });
-                } else {
-                    console.log('Response body: ', response.body);
-                    console.log('Response header: ', response.headers);
-                    //res.send(response.body);
-
-                    if (!isNull(response.body["Fault"])) {
-                        reject({
-                            "success": false,
-                            "errorMessage": "Invalid Payload Request",
-                            "body": response.body
                         });
                     } else {
-                        resolve({
-                            "success": true,
-                            'body': response.body
-                        });
+                        console.log('Response body: ', response.body);
+                        console.log('Response header: ', response.headers);
+                        //res.send(response.body);
+                        console.log(response.body);
+                        
+                        if (!isNull(response.body["Fault"])) {
+                            reject({
+                                "success": false,
+                                "errorMessage": "Invalid Payload Request",
+                                "body": response.body
+                            });
+                        } else {
+                            resolve({
+                                "success": true,
+                                'body': response.body
+                            });
+                        }
                     }
+                }else{
+                    console.log(response);
                 }
             });
         });

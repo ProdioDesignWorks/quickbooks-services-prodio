@@ -69,6 +69,7 @@ module.exports = function(Qbemployees) {
 		            }
 
 		        }).catch(err => {
+                    console.log(err);
 		            let returnMsg = err;
 		            if (!isNull(err["body"]["Fault"])) {
 		                returnMsg = err["body"]["Fault"]["Error"][0]["Detail"];
