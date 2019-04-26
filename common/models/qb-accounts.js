@@ -1,7 +1,7 @@
 'use strict';
-const HttpErrors = require('http-errors');
-const request = require('request');
 const {
+    HttpErrors,
+    request,
     findReplace,
     unique,
     isValidObject,
@@ -11,15 +11,12 @@ const {
     isArray,
     isObject,
     print,
-    isNull
-} = require('../../utility/helper');
-const {
+    isNull,
     QB_URLS,
     QB_TERMS,
-    config
-} = require('../../config/constants');
-
-const QBAPIHandler = require('../../utility/apis_handler');
+    config,
+    QBAPIHandler
+} = require('../../utility/common');
 
 module.exports = function(Qbaccounts) {
 

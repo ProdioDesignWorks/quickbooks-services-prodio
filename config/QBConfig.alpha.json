@@ -1,6 +1,6 @@
 {
-  "clientId": "Q0ic6t6nabzKFmhmXsVdk1mAdIRarXiVIAu6mlimkUaFT2iIkz",
-  "clientSecret": "7tjwyK6QESq9NBJa4MkgKP8ovDI6T0dS9anutpnh",
+  "clientId": "Q0L6viVndDTLjXabaLc77YNZeJT2ZX5kGHDGRwRVseEoqcndGq",
+  "clientSecret": "DMMa8nXaJqjGg3U5tMia4pNbpjZcfXGilzvAstz3",
   "redirectUri": "http://localhost:7000/api/Oauth2Data/callback",
   "configurationEndpoint": "https://developer.api.intuit.com/.well-known/openid_sandbox_configuration/",
   "api_uri": "https://sandbox-quickbooks.api.intuit.com/v3/company/",
