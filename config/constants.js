@@ -39,7 +39,12 @@ exports.QB_URLS = {
     "EDIT_PAYMENT": '/payment?operation=update&minorversion='+minorversion,
     "GET_PAYMENT": '/payment/[PAYMENTID]?minorversion='+minorversion,
     "DELETE_PAYMENT": "/payment?minorversion="+minorversion,
-    "GETALL_PAYMENTS": "/query?query=[QUERY]",
+    "GETALL_PAYMENTS": "/query?query=[QUERY]",   
+    "CREATE_VENDOR":"/vendor?minorversion="+minorversion,
+    "EDIT_VENDOR": '/vendor?operation=update&minorversion='+minorversion,
+    "GET_VENDOR": '/vendor/[VENDORID]?minorversion='+minorversion,
+    "DELETE_VENDOR": "/vendor?minorversion="+minorversion,
+    "GETALL_VENDORS": "/query?query=[QUERY]",
 }
 
 exports.QB_TERMS = {
@@ -67,7 +72,12 @@ exports.QB_TERMS = {
     "EDIT_PAYMENT": "EDIT_PAYMENT",
     "GET_PAYMENT": "GET_PAYMENT",
     "DELETE_PAYMENT": "DELETE_PAYMENT",
-    "GETALL_PAYMENTS":"GETALL_PAYMENTS"
+    "GETALL_PAYMENTS":"GETALL_PAYMENTS",
+    "CREATE_VENDOR":"CREATE_VENDOR",
+    "EDIT_VENDOR": "EDIT_VENDOR",
+    "GET_VENDOR": "GET_VENDOR",
+    "DELETE_VENDOR": "DELETE_VENDOR",
+    "GETALL_VENDORS": "GETALL_VENDORS"
 }
 
 exports.config = config;
