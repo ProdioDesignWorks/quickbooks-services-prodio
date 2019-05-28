@@ -1,3 +1,9 @@
+#### Pre-requisite
+
+In order these APIs, it will be better if you use its child module, to call respective APIs.
+The child module is available here - [Quickbooks Module](https://github.com/ProdioDesignWorks/quickbooks-module-prodio)
+
+
 #### Setup
 
 Install NPM dependencies:

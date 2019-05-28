@@ -8,15 +8,15 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 let portNumber = 7000;
 
-let configFile = './QBConfig.dev.json';
+let configFile = './config/QBConfig.dev.json';
 console.log(process.env.NODE_ENV);
 
 switch(process.env.NODE_ENV){
   case "alpha":
-    configFile = './QBConfig.alpha.json';
+    configFile = './config/QBConfig.alpha.json';
   break;
   case "prod":
-    configFile = './QBConfig.prod.json';
+    configFile = './config/QBConfig.prod.json';
   break;
 }
 
