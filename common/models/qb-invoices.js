@@ -11,7 +11,8 @@ const {
     isArray,
     isObject,
     print,
-    isNull
+    isNull,
+    convertObjectIdToString
 } = require('../../utility/helper');
 const {
     QB_URLS,
@@ -47,12 +48,12 @@ module.exports = function(Qbinvoices) {
         }
         let lbModels = Qbinvoices.app.models;
 
-        lbModels.QBCustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        lbModels.QBCustomers.findOne({"where":{"customerId":convertObjectIdToString(customerId)}}).then(customerInfo=>{
         	if(isValidObject(customerInfo)){
         		let customerRef = customerInfo["metaData"]["Customer"]["Id"];
         		//let customerName = customerInfo["metaData"]["Customer"]["DisplayName"];
 
-        		Qbinvoices.findOne({"where":{"paymentInvoiceId":paymentInvoiceId}}).then(invoiceInfo=>{
+        		Qbinvoices.findOne({"where":{"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId)}}).then(invoiceInfo=>{
 		        	if(isValidObject(invoiceInfo)){
 		        		cb(new HttpErrors.InternalServerError('The paymentInvoice Id already exists.', {
 				           expose: false
@@ -62,7 +63,7 @@ module.exports = function(Qbinvoices) {
 
 		        		QBAPIHandler.funCallApi(QB_URLS["CREATE_INVOICE"], invoiceData,"POST", lbModels).then(responseData => {
 				            if (responseData["success"]) {
-				            	Qbinvoices.create({"paymentInvoiceId":paymentInvoiceId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
+				            	Qbinvoices.create({"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId),"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 				    				cb(null, responseData);
 				    			}).catch(err=>{
 				    				cb(new HttpErrors.InternalServerError('Error While Saving QBInvoice Info.', {
@@ -130,12 +131,12 @@ module.exports = function(Qbinvoices) {
 
         let lbModels = Qbinvoices.app.models;
 
-        lbModels.QBCustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        lbModels.QBCustomers.findOne({"where":{"customerId":convertObjectIdToString(customerId)}}).then(customerInfo=>{
         	if(isValidObject(customerInfo)){
         		let customerRef = customerInfo["metaData"]["Customer"]["Id"];
         		//let customerName = customerInfo["metaData"]["Customer"]["DisplayName"];
 
-        		Qbinvoices.findOne({"where":{"paymentInvoiceId":paymentInvoiceId}}).then(invoiceInfo=>{
+        		Qbinvoices.findOne({"where":{"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId)}}).then(invoiceInfo=>{
 		        	if(isValidObject(invoiceInfo)){
 		        		invoiceData["Id"] = invoiceInfo["metaData"]["Invoice"]["Id"];
 		        		invoiceData["SyncToken"] = parseInt(invoiceInfo["metaData"]["Invoice"]["SyncToken"]);
@@ -212,7 +213,7 @@ module.exports = function(Qbinvoices) {
 
     	let lbModels = Qbinvoices.app.models;
 
-        Qbinvoices.findOne({"where":{"paymentInvoiceId":paymentInvoiceId}}).then(invoiceInfo=>{
+        Qbinvoices.findOne({"where":{"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId)}}).then(invoiceInfo=>{
         	if(isValidObject(invoiceInfo)){
         		let qbInvId = invoiceInfo["metaData"]["Invoice"]["Id"];
         		let _url = QB_URLS["GET_INVOICE"].replace("[INVOICEID]",qbInvId);
@@ -275,7 +276,7 @@ module.exports = function(Qbinvoices) {
     Qbinvoices.deleteInvoice = function(paymentInvoiceId, cb) {
     	let lbModels = Qbinvoices.app.models;
 
-        Qbinvoices.findOne({"where":{"paymentInvoiceId":paymentInvoiceId}}).then(invoiceInfo=>{
+        Qbinvoices.findOne({"where":{"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId)}}).then(invoiceInfo=>{
         	if(isValidObject(invoiceInfo)){
         		let qbInvId = invoiceInfo["metaData"]["Invoice"]["Id"];
         		let _url = QB_URLS["DELETE_INVOICE"].replace("[INVOICEID]",qbInvId);
@@ -343,7 +344,7 @@ module.exports = function(Qbinvoices) {
     Qbinvoices.voidInvoice = function(paymentInvoiceId, cb) {
     	let lbModels = Qbinvoices.app.models;
 
-        Qbinvoices.findOne({"where":{"paymentInvoiceId":paymentInvoiceId}}).then(invoiceInfo=>{
+        Qbinvoices.findOne({"where":{"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId)}}).then(invoiceInfo=>{
         	if(isValidObject(invoiceInfo)){
         		let qbInvId = invoiceInfo["metaData"]["Invoice"]["Id"];
         		let _url = QB_URLS["VOID_INVOICE"].replace("[INVOICEID]",qbInvId);
@@ -411,7 +412,7 @@ module.exports = function(Qbinvoices) {
     Qbinvoices.voidInvoice = function(paymentInvoiceId,emailId, cb) {
     	let lbModels = Qbinvoices.app.models;
 
-        Qbinvoices.findOne({"where":{"paymentInvoiceId":paymentInvoiceId}}).then(invoiceInfo=>{
+        Qbinvoices.findOne({"where":{"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId)}}).then(invoiceInfo=>{
         	if(isValidObject(invoiceInfo)){
         		let qbInvId = invoiceInfo["metaData"]["Invoice"]["Id"];
         		let _url = QB_URLS["EMAIL_INVOICE"].replace("[INVOICEID]",qbInvId);
@@ -471,7 +472,7 @@ module.exports = function(Qbinvoices) {
     Qbinvoices.getPDFInvoice = function(paymentInvoiceId, cb) {
     	let lbModels = Qbinvoices.app.models;
 
-        Qbinvoices.findOne({"where":{"paymentInvoiceId":paymentInvoiceId}}).then(invoiceInfo=>{
+        Qbinvoices.findOne({"where":{"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId)}}).then(invoiceInfo=>{
         	if(isValidObject(invoiceInfo)){
         		let qbInvId = invoiceInfo["metaData"]["Invoice"]["Id"];
         		let _url = QB_URLS["GET_INVOICE_PDF"].replace("[INVOICEID]",qbInvId);

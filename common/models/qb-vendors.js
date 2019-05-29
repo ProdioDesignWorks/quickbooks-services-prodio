@@ -15,7 +15,8 @@ const {
     QB_URLS,
     QB_TERMS,
     config,
-    QBAPIHandler
+    QBAPIHandler,
+    convertObjectIdToString
 } = require('../../utility/common');
 
 module.exports = function(Qbvendors) {
@@ -43,7 +44,7 @@ module.exports = function(Qbvendors) {
         }
         let lbModels = Qbvendors.app.models;
 
-        Qbvendors.findOne({"where":{"vendorId":vendorId}}).then(vendorInfo=>{
+        Qbvendors.findOne({"where":{"vendorId":convertObjectIdToString(vendorId)}}).then(vendorInfo=>{
         	if(isValidObject(vendorInfo)){
         		cb(new HttpErrors.InternalServerError('The vendor Id already exists.', {
 		           expose: false
@@ -51,7 +52,7 @@ module.exports = function(Qbvendors) {
         	}else{
         		QBAPIHandler.funCallApi(QB_URLS["CREATE_VENDOR"], vendorData,"POST", lbModels).then(responseData => {
 		            if (responseData["success"]) {
-		            	Qbvendors.create({"vendorId":vendorId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
+		            	Qbvendors.create({"vendorId":convertObjectIdToString(vendorId),"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 		    				cb(null, responseData);
 		    			}).catch(err=>{
 		    				cb(new HttpErrors.InternalServerError('Error While Saving QBVendor Info.', {
@@ -108,7 +109,7 @@ module.exports = function(Qbvendors) {
 
         let lbModels = Qbvendors.app.models;
 
-        Qbvendors.findOne({"where":{"vendorId":vendorId}}).then(vendorInfo=>{
+        Qbvendors.findOne({"where":{"vendorId":convertObjectIdToString(vendorId)}}).then(vendorInfo=>{
         	if(isValidObject(vendorInfo)){
         		vendorData["Id"] = vendorInfo["metaData"]["Vendor"]["Id"];
         		vendorData["SyncToken"] = parseInt(vendorInfo["metaData"]["Vendor"]["SyncToken"]);
@@ -172,7 +173,7 @@ module.exports = function(Qbvendors) {
 
     	let lbModels = Qbvendors.app.models;
 
-        Qbvendors.findOne({"where":{"vendorId":vendorId}}).then(vendorInfo=>{
+        Qbvendors.findOne({"where":{"vendorId":convertObjectIdToString(vendorId)}}).then(vendorInfo=>{
         	if(isValidObject(vendorInfo)){
         		let qbVenId = vendorInfo["metaData"]["Vendor"]["Id"];
         		let _url = QB_URLS["GET_VENDOR"].replace("[VENDORID]",qbVenId);
@@ -235,7 +236,7 @@ module.exports = function(Qbvendors) {
     Qbvendors.deleteVendor = function(vendorId, cb) {
     	let lbModels = Qbvendors.app.models;
 
-        Qbvendors.findOne({"where":{"vendorId":vendorId}}).then(vendorInfo=>{
+        Qbvendors.findOne({"where":{"vendorId":convertObjectIdToString(vendorId)}}).then(vendorInfo=>{
         	if(isValidObject(vendorInfo)){
         		let qbVendId = vendorInfo["metaData"]["Vendor"]["Id"];
         		let _url = QB_URLS["DELETE_VENDOR"].replace("[VENDORID]",qbVendId);

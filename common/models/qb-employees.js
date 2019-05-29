@@ -15,7 +15,8 @@ const {
     QB_URLS,
     QB_TERMS,
     config,
-    QBAPIHandler
+    QBAPIHandler,
+    convertObjectIdToString
 } = require('../../utility/common');
 
 module.exports = function(Qbemployees) {
@@ -43,7 +44,7 @@ module.exports = function(Qbemployees) {
         }
         let lbModels = Qbemployees.app.models;
 
-        Qbemployees.findOne({"where":{"employeeId":employeeId}}).then(employeeInfo=>{
+        Qbemployees.findOne({"where":{"employeeId":convertObjectIdToString(employeeId)}}).then(employeeInfo=>{
         	if(isValidObject(employeeInfo)){
         		cb(new HttpErrors.InternalServerError('The customer Id already exists.', {
 		           expose: false
@@ -51,7 +52,7 @@ module.exports = function(Qbemployees) {
         	}else{
         		QBAPIHandler.funCallApi(QB_URLS["CREATE_EMPLOYEE"], employeeData,"POST", lbModels).then(responseData => {
 		            if (responseData["success"]) {
-		            	Qbemployees.create({"employeeId":employeeId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
+		            	Qbemployees.create({"employeeId":convertObjectIdToString(employeeId),"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 		    				cb(null, responseData);
 		    			}).catch(err=>{
 		    				cb(new HttpErrors.InternalServerError('Error While Saving QBEmployee Info.', {
@@ -109,7 +110,7 @@ module.exports = function(Qbemployees) {
 
         let lbModels = Qbemployees.app.models;
 
-        Qbemployees.findOne({"where":{"employeeId":employeeId}}).then(employeeInfo=>{
+        Qbemployees.findOne({"where":{"employeeId":convertObjectIdToString(employeeId)}}).then(employeeInfo=>{
         	if(isValidObject(employeeInfo)){
         		employeeData["Id"] = employeeInfo["metaData"]["Employee"]["Id"];
         		employeeData["SyncToken"] = parseInt(employeeInfo["metaData"]["Employee"]["SyncToken"]);
@@ -173,7 +174,7 @@ module.exports = function(Qbemployees) {
 
     	let lbModels = Qbemployees.app.models;
 
-        Qbemployees.findOne({"where":{"employeeId":employeeId}}).then(employeeInfo=>{
+        Qbemployees.findOne({"where":{"employeeId":convertObjectIdToString(employeeId)}}).then(employeeInfo=>{
         	if(isValidObject(employeeInfo)){
         		let qbCustId = employeeInfo["metaData"]["Employee"]["Id"];
         		let _url = QB_URLS["GET_EMPLOYEE"].replace("[EMPLOYEEID]",qbCustId);
@@ -236,7 +237,7 @@ module.exports = function(Qbemployees) {
     Qbemployees.deleteEmployee = function(employeeId, cb) {
     	let lbModels = Qbemployees.app.models;
 
-        Qbemployees.findOne({"where":{"employeeId":employeeId}}).then(employeeInfo=>{
+        Qbemployees.findOne({"where":{"employeeId":convertObjectIdToString(employeeId)}}).then(employeeInfo=>{
         	if(isValidObject(employeeInfo)){
         		let qbCustId = employeeInfo["metaData"]["Employee"]["Id"];
         		let _url = QB_URLS["DELETE_EMPLOYEE"].replace("[EMPLOYEEID]",qbCustId);

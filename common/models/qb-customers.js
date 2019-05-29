@@ -15,7 +15,8 @@ const {
     QB_URLS,
     QB_TERMS,
     config,
-    QBAPIHandler
+    QBAPIHandler,
+    convertObjectIdToString
 } = require('../../utility/common');
 
 module.exports = function(Qbcustomers) {
@@ -43,7 +44,7 @@ module.exports = function(Qbcustomers) {
         }
         let lbModels = Qbcustomers.app.models;
 
-        Qbcustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        Qbcustomers.findOne({"where":{"customerId":convertObjectIdToString(customerId)}}).then(customerInfo=>{
         	if(isValidObject(customerInfo)){
         		cb(new HttpErrors.InternalServerError('The customer Id already exists.', {
 		           expose: false
@@ -51,7 +52,7 @@ module.exports = function(Qbcustomers) {
         	}else{
         		QBAPIHandler.funCallApi(QB_URLS["CREATE_CUSTOMER"], customerData,"POST", lbModels).then(responseData => {
 		            if (responseData["success"]) {
-		            	Qbcustomers.create({"customerId":customerId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
+		            	Qbcustomers.create({"customerId":convertObjectIdToString(customerId),"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 		    				cb(null, responseData);
 		    			}).catch(err=>{
 		    				cb(new HttpErrors.InternalServerError('Error While Saving QBAccount Info.', {
@@ -108,7 +109,7 @@ module.exports = function(Qbcustomers) {
 
         let lbModels = Qbcustomers.app.models;
 
-        Qbcustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        Qbcustomers.findOne({"where":{"customerId":convertObjectIdToString(customerId)}}).then(customerInfo=>{
         	if(isValidObject(customerInfo)){
         		customerData["Id"] = customerInfo["metaData"]["Customer"]["Id"];
         		customerData["SyncToken"] = parseInt(customerInfo["metaData"]["Customer"]["SyncToken"]);
@@ -172,7 +173,7 @@ module.exports = function(Qbcustomers) {
 
     	let lbModels = Qbcustomers.app.models;
 
-        Qbcustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        Qbcustomers.findOne({"where":{"customerId":convertObjectIdToString(customerId)}}).then(customerInfo=>{
         	if(isValidObject(customerInfo)){
         		let qbCustId = customerInfo["metaData"]["Customer"]["Id"];
         		let _url = QB_URLS["GET_CUSTOMER"].replace("[CUSTOMERID]",qbCustId);
@@ -235,7 +236,7 @@ module.exports = function(Qbcustomers) {
     Qbcustomers.deleteCustomer = function(customerId, cb) {
     	let lbModels = Qbcustomers.app.models;
 
-        Qbcustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        Qbcustomers.findOne({"where":{"customerId":convertObjectIdToString(customerId)}}).then(customerInfo=>{
         	if(isValidObject(customerInfo)){
         		let qbCustId = customerInfo["metaData"]["Customer"]["Id"];
         		let _url = QB_URLS["DELETE_CUSTOMER"].replace("[CUSTOMERID]",qbCustId);
