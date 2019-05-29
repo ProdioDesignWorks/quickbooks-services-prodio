@@ -11,7 +11,8 @@ const {
     isArray,
     isObject,
     print,
-    isNull
+    isNull,
+    convertObjectIdToString
 } = require('./helper');
 const {
     QB_URLS,
@@ -39,5 +40,6 @@ exports.QB_TERMS = QB_TERMS;
 exports.config = config;
 
 exports.QBAPIHandler = QBAPIHandler;
+exports.convertObjectIdToString = convertObjectIdToString;
 
 

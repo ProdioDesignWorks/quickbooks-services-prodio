@@ -11,7 +11,8 @@ const {
     isArray,
     isObject,
     print,
-    isNull
+    isNull,
+    convertObjectIdToString
 } = require('../../utility/helper');
 const {
     QB_URLS,
@@ -48,12 +49,12 @@ module.exports = function(Qbpayments) {
         }
         let lbModels = Qbpayments.app.models;
 
-        lbModels.QBCustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        lbModels.QBCustomers.findOne({"where":{"customerId":convertObjectIdToString(customerId)}}).then(customerInfo=>{
         	if(isValidObject(customerInfo)){
         		let customerRef = customerInfo["metaData"]["Customer"]["Id"];
         		let customerName = customerInfo["metaData"]["Customer"]["DisplayName"];
 
-        		Qbpayments.findOne({"where":{"paymentId":paymentId}}).then(paymentInfo=>{
+        		Qbpayments.findOne({"where":{"paymentId":convertObjectIdToString(paymentId)}}).then(paymentInfo=>{
 		        	if(isValidObject(paymentInfo)){
 		        		cb(new HttpErrors.InternalServerError('The payment Id already exists.', {
 				           expose: false
@@ -64,7 +65,7 @@ module.exports = function(Qbpayments) {
 		        		if(isNull(paymentInvoiceId)){
 		        			QBAPIHandler.funCallApi(QB_URLS["CREATE_PAYMENT"], invoiceData,"POST", lbModels).then(responseData => {
 					            if (responseData["success"]) {
-					            	Qbpayments.create({"paymentId":paymentId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
+					            	Qbpayments.create({"paymentId":convertObjectIdToString(paymentId),"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 					    				cb(null, responseData);
 					    			}).catch(err=>{
 					    				cb(new HttpErrors.InternalServerError('Error While Saving QBPayment Info.', {
@@ -88,7 +89,7 @@ module.exports = function(Qbpayments) {
 					            }));
 					        });
 		        		}else{
-		        			lbModels.QBInvoices.findOne({"where":{"paymentInvoiceId":paymentInvoiceId }}).then(invoiceInfo=>{
+		        			lbModels.QBInvoices.findOne({"where":{"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId) }}).then(invoiceInfo=>{
 		        				if(isValidObject(invoiceInfo)){
 		        					let invoiceRef = invoiceInfo["metaData"]["Invoice"]["Id"];
 
@@ -104,7 +105,7 @@ module.exports = function(Qbpayments) {
 
     								QBAPIHandler.funCallApi(QB_URLS["CREATE_PAYMENT"], invoiceData,"POST", lbModels).then(responseData => {
 							            if (responseData["success"]) {
-							            	Qbpayments.create({"paymentId":paymentId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
+							            	Qbpayments.create({"paymentId":convertObjectIdToString(paymentId),"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 							    				cb(null, responseData);
 							    			}).catch(err=>{
 							    				cb(new HttpErrors.InternalServerError('Error While Saving QBPayment Info.', {
@@ -183,12 +184,12 @@ module.exports = function(Qbpayments) {
 
         let lbModels = Qbpayments.app.models;
 
-        lbModels.QBCustomers.findOne({"where":{"customerId":customerId}}).then(customerInfo=>{
+        lbModels.QBCustomers.findOne({"where":{"customerId":convertObjectIdToString(customerId)}}).then(customerInfo=>{
         	if(isValidObject(customerInfo)){
         		let customerRef = customerInfo["metaData"]["Customer"]["Id"];
         		let customerName = customerInfo["metaData"]["Customer"]["DisplayName"];
 
-        		Qbpayments.findOne({"where":{"paymentId":paymentId}}).then(paymentInfo=>{
+        		Qbpayments.findOne({"where":{"paymentId":convertObjectIdToString(paymentId)}}).then(paymentInfo=>{
 		        	if(isValidObject(paymentInfo)){
 		        		invoiceData["Id"] = paymentInfo["metaData"]["Payment"]["Id"];
 		        		invoiceData["SyncToken"] = parseInt(paymentInfo["metaData"]["Payment"]["SyncToken"]);
@@ -223,7 +224,7 @@ module.exports = function(Qbpayments) {
 					        });
 		        		}else{
 
-		        			lbModels.QBInvoices.findOne({"where":{"paymentInvoiceId":paymentInvoiceId }}).then(invoiceInfo=>{
+		        			lbModels.QBInvoices.findOne({"where":{"paymentInvoiceId":convertObjectIdToString(paymentInvoiceId) }}).then(invoiceInfo=>{
 		        				if(isValidObject(invoiceInfo)){
 		        					let invoiceRef = invoiceInfo["metaData"]["Invoice"]["Id"];
 
@@ -316,7 +317,7 @@ module.exports = function(Qbpayments) {
 
     	let lbModels = Qbpayments.app.models;
 
-        Qbpayments.findOne({"where":{"paymentId":paymentId}}).then(paymentInfo=>{
+        Qbpayments.findOne({"where":{"paymentId":convertObjectIdToString(paymentId)}}).then(paymentInfo=>{
         	if(isValidObject(paymentInfo)){
         		let qbInvId = paymentInfo["metaData"]["Payment"]["Id"];
         		let _url = QB_URLS["GET_PAYMENT"].replace("[PAYMENTID]",qbInvId);
@@ -379,7 +380,7 @@ module.exports = function(Qbpayments) {
     Qbpayments.deletePayment = function(paymentInvoiceId, cb) {
     	let lbModels = Qbpayments.app.models;
 
-        Qbpayments.findOne({"where":{"paymentId":paymentId}}).then(invoiceInfo=>{
+        Qbpayments.findOne({"where":{"paymentId":convertObjectIdToString(paymentId)}}).then(invoiceInfo=>{
         	if(isValidObject(invoiceInfo)){
         		let qbInvId = invoiceInfo["metaData"]["Payment"]["Id"];
         		let _url = QB_URLS["DELETE_PAYMENT"].replace("[PAYMENTID]",qbInvId);

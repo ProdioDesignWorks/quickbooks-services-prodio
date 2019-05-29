@@ -15,7 +15,8 @@ const {
     QB_URLS,
     QB_TERMS,
     config,
-    QBAPIHandler
+    QBAPIHandler,
+    convertObjectIdToString
 } = require('../../utility/common');
 
 module.exports = function(Qbaccounts) {
@@ -44,7 +45,7 @@ module.exports = function(Qbaccounts) {
 
         let lbModels = Qbaccounts.app.models;
 
-        Qbaccounts.findOne({"where":{"accountId":accountId}}).then(accountInfo=>{
+        Qbaccounts.findOne({"where":{"accountId":convertObjectIdToString(accountId) }}).then(accountInfo=>{
         	if(isValidObject(accountInfo)){
         		cb(new HttpErrors.InternalServerError('The account Id already exists.', {
 		           expose: false
@@ -52,7 +53,7 @@ module.exports = function(Qbaccounts) {
         	}else{
         		QBAPIHandler.funCallApi(QB_URLS["CREATE_ACCOUNT"], accountData,"POST", lbModels).then(responseData => {
 		            if (responseData["success"]) {
-		            	Qbaccounts.create({"accountId":accountId,"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
+		            	Qbaccounts.create({"accountId":convertObjectIdToString(accountId),"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 		    				cb(null, responseData);
 		    			}).catch(err=>{
 		    				cb(new HttpErrors.InternalServerError('Error While Saving QBAccount Info.', {
@@ -109,7 +110,7 @@ module.exports = function(Qbaccounts) {
 
         let lbModels = Qbaccounts.app.models;
 
-        Qbaccounts.findOne({"where":{"accountId":accountId}}).then(accountInfo=>{
+        Qbaccounts.findOne({"where":{"accountId":convertObjectIdToString(accountId)}}).then(accountInfo=>{
         	if(isValidObject(accountInfo)){
         		accountData["Id"] = accountInfo["metaData"]["Account"]["Id"];
         		accountData["SyncToken"] = parseInt(accountInfo["metaData"]["Account"]["SyncToken"]);
@@ -174,7 +175,7 @@ module.exports = function(Qbaccounts) {
 
     	let lbModels = Qbaccounts.app.models;
 
-        Qbaccounts.findOne({"where":{"accountId":accountId}}).then(accountInfo=>{
+        Qbaccounts.findOne({"where":{"accountId":convertObjectIdToString(accountId)}}).then(accountInfo=>{
         	if(isValidObject(accountInfo)){
         		let qbAccId = accountInfo["metaData"]["Account"]["Id"];
         		let _url = QB_URLS["GET_ACCOUNT"].replace("[ACCOUNTID]",qbAccId);

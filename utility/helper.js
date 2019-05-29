@@ -52,4 +52,9 @@ const isNull = function(val) {
     return false;
 };
 
+const convertObjectIdToString = function(objectID) {
+    return objectID.toString().substring(0,10);
+};
+
 exports.isNull = str => isNull(str);
+exports.convertObjectIdToString = convertObjectIdToString;
