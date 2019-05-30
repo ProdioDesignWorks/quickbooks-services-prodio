@@ -94,7 +94,7 @@ module.exports = function(Qbpayments) {
 		        				if(isValidObject(invoiceInfo)){
 		        					let invoiceRef = invoiceInfo["metaData"]["Invoice"]["Id"];
 
-		        					invoiceData["Line"] =  [
+		        					paymentData["Line"] =  [
 									    {
 									        "Amount": paymentData["TotalAmt"],
 									        "LinkedTxn": [
@@ -104,7 +104,7 @@ module.exports = function(Qbpayments) {
 									        }]
     									}];
 
-    								QBAPIHandler.funCallApi(QB_URLS["CREATE_PAYMENT"], invoiceData,"POST", lbModels).then(responseData => {
+    								QBAPIHandler.funCallApi(QB_URLS["CREATE_PAYMENT"], paymentData,"POST", lbModels).then(responseData => {
 							            if (responseData["success"]) {
 							            	Qbpayments.create({"paymentId":convertObjectIdToString(paymentId),"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 							    				cb(null, responseData);
