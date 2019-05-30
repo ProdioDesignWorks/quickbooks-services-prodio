@@ -53,17 +53,18 @@ module.exports = function(Qbpayments) {
         	if(isValidObject(customerInfo)){
         		let customerRef = customerInfo["metaData"]["Customer"]["Id"];
         		let customerName = customerInfo["metaData"]["Customer"]["DisplayName"];
-
-        		Qbpayments.findOne({"where":{"paymentId":convertObjectIdToString(paymentId)}}).then(paymentInfo=>{
+        		//console.log({"where":{"paymentId":convertObjectIdToString(paymentId)}});
+        		//console.log({"where":{"customerId":convertObjectIdToString(customerId)}})
+        		lbModels.QBPayments.findOne({"where":{"paymentId":convertObjectIdToString(paymentId)}}).then(paymentInfo=>{
 		        	if(isValidObject(paymentInfo)){
 		        		cb(new HttpErrors.InternalServerError('The payment Id already exists.', {
 				           expose: false
 				    	}));
 		        	}else{
-		        		invoiceData["CustomerRef"] = {"value":customerRef,"name":customerName};
+		        		paymentData["CustomerRef"] = {"value":customerRef,"name":customerName};
 
 		        		if(isNull(paymentInvoiceId)){
-		        			QBAPIHandler.funCallApi(QB_URLS["CREATE_PAYMENT"], invoiceData,"POST", lbModels).then(responseData => {
+		        			QBAPIHandler.funCallApi(QB_URLS["CREATE_PAYMENT"], paymentData,"POST", lbModels).then(responseData => {
 					            if (responseData["success"]) {
 					            	Qbpayments.create({"paymentId":convertObjectIdToString(paymentId),"metaData":responseData["body"],"isActive":true,"createdAt":new Date()}).then(success=>{
 					    				cb(null, responseData);
@@ -140,11 +141,12 @@ module.exports = function(Qbpayments) {
 		        		
 		        	}
 
-		        }).catch(err=>{
-		        	cb(new HttpErrors.InternalServerError('Error while searching payment info '+JSON.stringify(err), {
-				                expose: false
-				    }));
 		        })
+		      //   .catch(err=>{
+		      //   	cb(new HttpErrors.InternalServerError('Error while searching payment info '+JSON.stringify(err), {
+				    //             expose: false
+				    // }));
+		      //   })
         	}else{
         		cb(new HttpErrors.InternalServerError('Invalid payment Id.', {
 		           expose: false
