@@ -25,7 +25,7 @@
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^6.2.0",
     "loopback-connector-mongodb": "^3.8.0",
-    "mongoose": "^5.5.1",
+    "mongoose": "^5.7.5",
     "request": "^2.78.0"
   },
   "devDependencies": {
